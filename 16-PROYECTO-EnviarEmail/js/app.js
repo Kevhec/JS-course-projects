@@ -11,9 +11,9 @@ document.addEventListener('DOMContentLoaded', function( ){
   const spinner = document.getElementById('spinner');
 
   // Event listeners
-  inputEmail.addEventListener('blur', validate);
-  inputSubject.addEventListener('blur', validate);
-  inputMessage.addEventListener('blur', validate);
+  inputEmail.addEventListener('input', validate);
+  inputSubject.addEventListener('input', validate);
+  inputMessage.addEventListener('input', validate);
   form.addEventListener('submit', sentEmail)
 
   resetButton.addEventListener('click', function(evt) {
