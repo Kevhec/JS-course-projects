@@ -5,7 +5,6 @@ const result = document.getElementById("resultado");
 const yearSelect = document.getElementById("year");
 const maxYear = new Date().getFullYear();
 const minYear = maxYear - 13;
-const error = document.querySelector('.error')
 
 // Filter Object
 const filterObj = {
@@ -25,9 +24,6 @@ document.addEventListener("DOMContentLoaded", () => {
   showCars(cars);
   //get Years
   getYears();
-  if(error) {
-    error.remove
-  }
 });
 
 selects.forEach((select) => {
@@ -116,27 +112,25 @@ selects.forEach((select) => {
   });
 });
 
-// Functions
+// FunctionsPP
 function showCars(array) {
-  resetList()
+  resetList();
   array.forEach((car) => {
     const { brand, model, year, price, doors, color, transmission } = car;
     const carHTML = document.createElement("P");
-    carHTML.classList.add('car');
+    carHTML.classList.add("car");
     carHTML.textContent = `${brand} - ${model} - ${year} - $ ${price} - ${doors} - ${color} - ${transmission}`;
-    if(!result.innerHTML) {
-      errorMessage()
-    }
     // Insert HTML
     result.appendChild(carHTML);
   });
+  errorMessage();
 }
 
 function resetList() {
-  const cars = document.querySelectorAll('.car');
-  cars.forEach(car => {
-    car.remove()
-  })
+  const resultCars = document.querySelectorAll(".car");
+  resultCars.forEach((car) => {
+    car.remove();
+  });
 }
 
 function getYears() {
@@ -149,13 +143,19 @@ function getYears() {
 }
 
 function errorMessage() {
-  if(error) {
-    error.remove
+  const message = document.createElement("P");
+  message.classList.add("error");
+  message.innerText = "No results";
+  message.style.fontWeight = "bold";
+  message.style.textAlign = "center";
+  if (
+    document.querySelector(".error") &&
+    document.querySelector(".car") != null
+  ) {
+    document.querySelector(".error").remove();
   }
-  const message = document.createElement('P');
-  message.classList.add('error')
-  message.innerText = 'No results';
-  message.style.fontWeight = 'bold';
-  message.style.textAlign = 'center';
-  result.appendChild(message)
+
+  if (!result.children[0]) {
+    result.appendChild(message);
+  }
 }
