@@ -28,91 +28,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
 selects.forEach((select) => {
   select.addEventListener("change", () => {
-    if (
-      select.id === "year" ||
-      select.id === "minPrice" ||
-      select.id === "maxPrice" ||
-      select.id === "doors"
-    ) {
-      filterObj[select.id] = parseInt(select.value);
-    } else {
-      filterObj[select.id] = select.value;
-    }
-
-    console.log(filterObj);
+    filterObj[select.id] = select.value;
     carFilter();
 
     function carFilter() {
-      const result = cars
-        .filter(filterBrand)
-        .filter(filterYear)
-        .filter(filterMinPrice)
-        .filter(filterMaxPrice)
-        .filter(filterDoors)
-        .filter(filterTransmission)
-        .filter(filterColor);
-      showCars(result);
-    }
+      const filterResult = cars
+        .filter(car => {
+          let matches = true;
+          filterObjKeys.forEach(filter => {
+            let filterVal = filterObj[filter]
 
-    function filterBrand(car) {
-      const { brand } = filterObj;
-      if (brand) {
-        return car.brand === brand;
-      }
-      return car;
-    }
+            if(/^\d+$/.test(filterVal)) filterVal = parseInt(filterVal);
 
-    function filterYear(car) {
-      const { year } = filterObj;
-      if (year) {
-        return car.year === year;
-      }
-      return car;
-    }
+            if(!matches || !filterVal) return;
 
-    function filterMinPrice(car) {
-      const { minPrice } = filterObj;
-      if (minPrice) {
-        return car.price >= minPrice;
+            if(filter === 'minPrice') {
+              matches = filterVal <= car.price
+            } else if(filter === 'maxPrice') {
+              matches = filterVal >= car.price
+            } else {
+              matches = filterVal === car[filter];
+            }
+          })
+          return matches;
+        })
+        showCars(filterResult);
       }
-      return car;
-    }
-
-    function filterMaxPrice(car) {
-      const { maxPrice } = filterObj;
-      if (maxPrice) {
-        return car.price <= maxPrice;
-      }
-      return car;
-    }
-
-    function filterDoors(car) {
-      const { doors } = filterObj;
-      if (doors) {
-        return car.doors === doors;
-      }
-      return car;
-    }
-
-    function filterTransmission(car) {
-      const { transmission } = filterObj;
-      if (transmission) {
-        return car.transmission === transmission;
-      }
-      return car;
-    }
-
-    function filterColor(car) {
-      const { color } = filterObj;
-      if (color) {
-        return car.color === color;
-      }
-      return car;
-    }
   });
 });
 
-// FunctionsPP
 function showCars(array) {
   resetList();
   array.forEach((car) => {
