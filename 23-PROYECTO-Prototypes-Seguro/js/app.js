@@ -111,16 +111,15 @@ Interface.prototype.message = function (elementClass, text) {
 // Show result
 
 Interface.prototype.showResults = function (insurance, ammount) {
-
   const resultContainer = document.createElement("DIV");
   resultContainer.classList.add("mt-10");
 
   const keys = Object.keys(insurance).filter((key) => key != "Id");
   keys.forEach((key) => {
-    createResult(key, insurance[key])
+    createResult(key, insurance[key]);
   });
 
-  createResult('Price', `$${ammount}`)
+  createResult("Price", `$${ammount}`);
   result.appendChild(resultContainer);
 
   function createResult(name, text) {
@@ -131,7 +130,7 @@ Interface.prototype.showResults = function (insurance, ammount) {
     const resultSpan = document.createElement("SPAN");
     resultSpan.classList.add("font-normal");
     resultSpan.textContent = text;
-    
+
     resultText.appendChild(resultSpan);
     resultContainer.appendChild(resultText);
   }
@@ -160,15 +159,14 @@ function quote(evt) {
   const brandName = brand.children[brand.selectedIndex].textContent;
   const insurance = new Insurance(brand.value, brandName, year.value, type);
 
-
   if (!insurance.validation()) return;
 
-  const spinner = document.getElementById('cargando');
-  spinner.classList.remove('hidden');
-  submitButton.setAttribute('disabled', true);
+  const spinner = document.getElementById("cargando");
+  spinner.classList.remove("hidden");
+  submitButton.setAttribute("disabled", true);
   setTimeout(() => {
-    spinner.classList.add('hidden')
-    submitButton.removeAttribute('disabled', false)
+    spinner.classList.add("hidden");
+    submitButton.removeAttribute("disabled", false);
   }, 3000);
 
   insurance.quoteInsurance();
