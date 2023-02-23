@@ -172,15 +172,25 @@ function initial() {
 }
 
 function promptManager(text) {
-  const userBudget = parseFloat(prompt(text || "¿Cuál es tu presupuesto?"));
-
-  // prompt validation
-  if (!userBudget || userBudget < 0) {
-    promptManager("Porfavor ingrese una cantidad válida");
-    return;
+  let userBudget;
+  const storageBudget = JSON.parse(localStorage.getItem('Budget'));
+  if(storageBudget) {
+    userBudget = storageBudget.totBudget;
+  } else {
+    userBudget = prompt(text || "¿Cuál es tu presupuesto?");
+    console.log(userBudget)
   }
 
-  budget = new Budget(userBudget);
+  // prompt validation
+  if (userBudget === null ) {
+    userBudget = 0
+  } else if (!parseFloat(userBudget) || userBudget < 0) {
+    promptManager("Porfavor ingrese una cantidad válida");
+    return
+  }
+
+  budget = new Budget(parseFloat(userBudget));
+  localStorage.setItem('Budget', JSON.stringify(budget));
   interface.showItems(budget);
 }
 
@@ -207,15 +217,15 @@ function manageBills(evt) {
 function billValidation(name, ammount) {
   let validation = false;
 
-  if (!name || ammount === "") {
+  if (name === "" || ammount === "") {
     interface.message("error", "No pueden haber campos vacíos");
-    return;
+    return validation;
   }
 
   const regEx = /^[+-]?\d+(\.\d+)?$/;
   if (!regEx.test(ammount) || ammount <= 0) {
     interface.message("error", "Valor no válido");
-    return;
+    return validation;
   }
 
   validation = true;

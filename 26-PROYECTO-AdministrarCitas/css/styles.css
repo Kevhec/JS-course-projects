@@ -9,6 +9,10 @@ body {
   min-height: 100%;
   padding-bottom: 5rem;
 }
+ul {
+    list-style-type: none;
+    padding: 0;
+}
 .titulo {
   font-weight: bold;
   font-size: 3rem;
