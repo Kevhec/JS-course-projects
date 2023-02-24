@@ -2,7 +2,7 @@
 const form = document.getElementById("nueva-cita");
 const content = document.getElementById("contenido");
 let editMode;
-let editObjId
+let editObjId;
 
 // Events
 form.addEventListener("submit", newAppointment);
@@ -18,13 +18,16 @@ class Appointments {
   }
 
   removeAppointment(id) {
-    this.appointments = this.appointments.filter(appointment => appointment['id'] != id)
-    console.log(appointments)
+    this.appointments = this.appointments.filter(
+      (appointment) => appointment["id"] != id
+    );
   }
 
   editAppointment(updatedAppointment) {
-    this.appointments = this.appointments.map(appointment => appointment.id == updatedAppointment.id ? updatedAppointment : appointment);
-    console.log(this.appointments)
+    this.appointments = this.appointments.map((appointment) =>
+      appointment.id == updatedAppointment.id ? updatedAppointment : appointment
+    );
+    console.log(this.appointments);
   }
 }
 
@@ -60,8 +63,8 @@ class Interface {
 
   printAppointment(arr) {
     const appointmentsList = document.getElementById("citas");
-    while(appointmentsList.children[0]) {
-      appointmentsList.children[0].remove()
+    while (appointmentsList.children[0]) {
+      appointmentsList.children[0].remove();
     }
     // Appointment HTML
     arr.forEach((element) => {
@@ -72,7 +75,7 @@ class Interface {
       const heading = document.createElement("H2");
 
       container.classList.add("cita", "p-3");
-      container.dataset.id = element['id'];
+      container.dataset.id = element["id"];
       heading.classList.add("card-title", "font-weight-bolder");
 
       heading.textContent = element.mascota;
@@ -86,30 +89,31 @@ class Interface {
       });
 
       const delButton = document.createElement("BUTTON");
-      delButton.classList.add('btn', 'btn-danger', 'mr-2');
+      delButton.classList.add("btn", "btn-danger", "mr-2");
       delButton.innerHTML =
         'Eliminar <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>';
       container.appendChild(delButton);
 
-      const editButton = document.createElement('BUTTON');
-      editButton.classList.add('btn', 'btn-success')
-      editButton.innerHTML = 'Editar <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg>'
+      const editButton = document.createElement("BUTTON");
+      editButton.classList.add("btn", "btn-success");
+      editButton.innerHTML =
+        'Editar <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg>';
       container.appendChild(editButton);
 
-      delButton.onclick = () => deleteAppointment(element['id']);
+      delButton.onclick = () => deleteAppointment(element["id"]);
       editButton.onclick = () => loadEditMode(element);
-      
+
       appointmentsList.appendChild(container);
     });
   }
 
   refillForm(appointment) {
-    console.log(appointment)
-    const keys = Object.keys(appointment).filter(elm => elm != 'id');
-    keys.forEach(key => {
+    console.log(appointment);
+    const keys = Object.keys(appointment).filter((elm) => elm != "id");
+    keys.forEach((key) => {
       const input = document.getElementById(`${key}`);
-      input.value = appointment[key]
-    })
+      input.value = appointment[key];
+    });
   }
 }
 
@@ -124,17 +128,25 @@ function newAppointment(evt) {
   const numericValuesIds = ["telefono"];
 
   const appointment = formDataToObj(formData);
-  
+
   if (!validation(appointment, numericValuesIds)) return;
 
   if (editMode) {
-    appointments.editAppointment(appointment)
-    form.querySelector('button[type="submit"]').textContent = 'Crear Cita';
-    interface.alert(document.querySelector('.agregar-cita'), 'success', 'Cita editada correctamente')
-    editMode = false
+    appointments.editAppointment(appointment);
+    form.querySelector('button[type="submit"]').textContent = "Crear Cita";
+    interface.alert(
+      document.querySelector(".agregar-cita"),
+      "success",
+      "Cita editada correctamente"
+    );
+    editMode = false;
   } else {
     appointments.appendAppointment(appointment);
-    interface.alert(document.querySelector('.agregar-cita'), 'success', 'Cita agregada correctamente')
+    interface.alert(
+      document.querySelector(".agregar-cita"),
+      "success",
+      "Cita agregada correctamente"
+    );
   }
 
   form.reset();
@@ -148,8 +160,8 @@ function formDataToObj(formData) {
     dataObj[entry[0]] = entry[1];
   }
 
-  if(editMode) {
-    dataObj.id = editObjId
+  if (editMode) {
+    dataObj.id = editObjId;
   } else {
     dataObj.id = Date.now();
   }
@@ -180,7 +192,7 @@ function validation(obj, numArr) {
   });
 
   if (message) {
-    interface.alert(document.querySelector('.agregar-cita'), "error", message);
+    interface.alert(document.querySelector(".agregar-cita"), "error", message);
   }
 
   return validation;
@@ -189,12 +201,16 @@ function validation(obj, numArr) {
 function deleteAppointment(id) {
   appointments.removeAppointment(id);
   interface.printAppointment(appointments.appointments);
-  interface.alert(document.querySelector('.agregar-cita'), 'success', 'Cita eliminada correctamente')
+  interface.alert(
+    document.querySelector(".agregar-cita"),
+    "success",
+    "Cita eliminada correctamente"
+  );
 }
 
 function loadEditMode(appointment) {
   interface.refillForm(appointment);
-  form.querySelector('button[type="submit"]').textContent = 'Guardar Cambios';
+  form.querySelector('button[type="submit"]').textContent = "Guardar Cambios";
   editMode = true;
   editObjId = appointment.id;
 }
