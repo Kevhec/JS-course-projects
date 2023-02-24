@@ -1,6 +1,8 @@
 // Variables
 const form = document.getElementById("nueva-cita");
 const content = document.getElementById("contenido");
+let editMode;
+let editObjId
 
 // Events
 form.addEventListener("submit", newAppointment);
@@ -18,6 +20,11 @@ class Appointments {
   removeAppointment(id) {
     this.appointments = this.appointments.filter(appointment => appointment['id'] != id)
     console.log(appointments)
+  }
+
+  editAppointment(updatedAppointment) {
+    this.appointments = this.appointments.map(appointment => appointment.id == updatedAppointment.id ? updatedAppointment : appointment);
+    console.log(this.appointments)
   }
 }
 
@@ -52,7 +59,6 @@ class Interface {
   }
 
   printAppointment(arr) {
-    const { id, mascota, propietario, telefono, fecha, hora, sintomas } = arr;
     const appointmentsList = document.getElementById("citas");
     while(appointmentsList.children[0]) {
       appointmentsList.children[0].remove()
@@ -91,7 +97,7 @@ class Interface {
       container.appendChild(editButton);
 
       delButton.onclick = () => deleteAppointment(element['id']);
-      editButton.onclick = () => editAppointment(element);
+      editButton.onclick = () => loadEditMode(element);
       
       appointmentsList.appendChild(container);
     });
@@ -115,13 +121,24 @@ const appointments = new Appointments();
 function newAppointment(evt) {
   evt.preventDefault();
   const formData = new FormData(form);
-  const appointment = formDataToObj(formData);
   const numericValuesIds = ["telefono"];
+
+  const appointment = formDataToObj(formData);
+  
   if (!validation(appointment, numericValuesIds)) return;
-  appointments.appendAppointment(appointment);
-  /* form.reset(); */
+
+  if (editMode) {
+    appointments.editAppointment(appointment)
+    form.querySelector('button[type="submit"]').textContent = 'Crear Cita';
+    interface.alert(document.querySelector('.agregar-cita'), 'success', 'Cita editada correctamente')
+    editMode = false
+  } else {
+    appointments.appendAppointment(appointment);
+    interface.alert(document.querySelector('.agregar-cita'), 'success', 'Cita agregada correctamente')
+  }
+
+  form.reset();
   interface.printAppointment(appointments.appointments);
-  interface.alert(document.querySelector('.agregar-cita'), 'success', 'Cita agregada correctamente')
 }
 
 function formDataToObj(formData) {
@@ -131,7 +148,12 @@ function formDataToObj(formData) {
     dataObj[entry[0]] = entry[1];
   }
 
-  dataObj.id = Date.now();
+  if(editMode) {
+    dataObj.id = editObjId
+  } else {
+    dataObj.id = Date.now();
+  }
+
   return dataObj;
 }
 
@@ -170,7 +192,9 @@ function deleteAppointment(id) {
   interface.alert(document.querySelector('.agregar-cita'), 'success', 'Cita eliminada correctamente')
 }
 
-function editAppointment(appointment) {
+function loadEditMode(appointment) {
   interface.refillForm(appointment);
-  form.querySelector('button[type="submit"]').textContent = 'Guardar Cambios'
+  form.querySelector('button[type="submit"]').textContent = 'Guardar Cambios';
+  editMode = true;
+  editObjId = appointment.id;
 }
