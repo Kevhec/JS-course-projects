@@ -27,7 +27,6 @@ class Appointments {
     this.appointments = this.appointments.map((appointment) =>
       appointment.id == updatedAppointment.id ? updatedAppointment : appointment
     );
-    console.log(this.appointments);
   }
 }
 
@@ -108,7 +107,6 @@ class Interface {
   }
 
   refillForm(appointment) {
-    console.log(appointment);
     const keys = Object.keys(appointment).filter((elm) => elm != "id");
     keys.forEach((key) => {
       const input = document.getElementById(`${key}`);
