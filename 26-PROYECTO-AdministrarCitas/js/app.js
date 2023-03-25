@@ -60,18 +60,53 @@ class Interface {
     }, 3000);
   }
 
+  /**
+   * Esta funcion es para X y Y
+   * 
+   * @param {Array} arr 
+   * @returns
+   */
   printAppointment(arr) {
     const appointmentsList = document.getElementById("citas");
-    while (appointmentsList.children[0]) {
-      appointmentsList.children[0].remove();
-    }
-    // Appointment HTML
-    arr.forEach((element) => {
+    appointmentsList.innerHTML = '';
+
+    arr.forEach((appointment) => {
+      console.log(appointment);
+      const copy = {...appointment};
+      delete copy.id;
+      delete copy.mascota;
+
+      const container = document.createElement("li");
+      container.classList.add("cita", "p-3");
+      container.dataset.id = appointment["id"];
+
+      container.innerHTML = `
+        <h2>${appointment.mascota}</h2>
+        ${Object.entries(copy).map((val) => 
+          `<p><span class="font-weight-bolder text-capitalize">${val[0]}</span>: ${val[1]}</p>`).join(' ')}
+        <button class="btn btn-danger mr-2">
+          Eliminar <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        </button>
+        <button class="btn btn-success">
+          Editar <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg>
+        </button>
+      `;
+      const delButton = container.querySelector('.btn-danger');
+      const editButton = container.querySelector('.btn-success');
+
+      delButton.onclick = () => deleteAppointment(appointment["id"]);
+      editButton.onclick = () => loadEditMode(appointment);
+
+      appointmentsList.appendChild(container);
+    });
+    // Appointment HTML 
+    /* arr.forEach((element) => {
+      console.log(element);
       const noIdArr = Object.keys(element).filter(
         (el) => el != "id" && el != "mascota"
       );
-      const container = document.createElement("LI");
-      const heading = document.createElement("H2");
+      const container = document.createElement("li");
+      const heading = document.createElement("h2");
 
       container.classList.add("cita", "p-3");
       container.dataset.id = element["id"];
@@ -81,13 +116,13 @@ class Interface {
       container.appendChild(heading);
 
       noIdArr.forEach((elm) => {
-        const p = document.createElement("P");
+        const p = document.createElement("p");
         p.innerHTML = `<span class="font-weight-bolder text-capitalize">${elm}</span>: ${element[elm]}`;
 
         container.appendChild(p);
       });
 
-      const delButton = document.createElement("BUTTON");
+      const delButton = document.createElement("button");
       delButton.classList.add("btn", "btn-danger", "mr-2");
       delButton.innerHTML =
         'Eliminar <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>';
@@ -103,7 +138,7 @@ class Interface {
       editButton.onclick = () => loadEditMode(element);
 
       appointmentsList.appendChild(container);
-    });
+    }); */
   }
 
   refillForm(appointment) {
