@@ -129,6 +129,8 @@
       transaction.oncomplete = () => {
         evt.target.parentElement.parentElement.remove()
       }
+
+      // TODO: Alert para confirmar eliminar
     }
   }
 })()
