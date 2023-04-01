@@ -1,22 +1,33 @@
 import { fetchRecipes } from './services/recipeAPI.js'
 import constants from './utils/constants.js'
 
-const catSelect = document.getElementById('categorias')
 const resultContainer = document.getElementById('resultado')
 const spinner = document.querySelector('.dot-spinner')
 const modal = new bootstrap.Modal('#modal', {})
-
-function initializeApp () {
-  fillCategories()
-}
+const favoritesContainer = document.querySelector('.favoritos')
 
 document.addEventListener('DOMContentLoaded', () => {
   initializeApp()
-  spinner.remove()
+  if(spinner) {
+    spinner.remove()
+  }
 })
-catSelect.addEventListener('change', getMeals)
 
-async function fillCategories () {
+if(favoritesContainer) {
+  getFavorites()
+}
+
+function initializeApp () {
+  const catSelect = document.getElementById('categorias')
+  if(catSelect) {
+    catSelect.addEventListener('change', getMeals)
+    fillCategories(catSelect)
+  } else {
+    return
+  }
+}
+
+async function fillCategories (catSelect) {
   try {
     const { categories } = await fetchRecipes(constants.CAT_ENDPOINT)
   
@@ -41,7 +52,7 @@ async function getMeals (evt) {
   try {
     resultContainer.append(spinner)
     const { meals } = await fetchRecipes(constants.FILTER_ENDPOINT, category)
-    if(meals) fillResults(meals)
+    if(meals) fillResults(meals, resultContainer)
   } catch (error) {
     console.error(error)
   } finally {
@@ -49,7 +60,7 @@ async function getMeals (evt) {
   }
 }
 
-function fillResults (meals) {
+function fillResults (meals, mealsContainer) {
   meals.forEach(meal => {
     const {
       idMeal: id,
@@ -66,7 +77,7 @@ function fillResults (meals) {
         </figure>
         <div class="card-body">
           <h3 class="card-title mb-3">${name}</h3>
-          <button class="btn btn-danger w-100" data-bs-target="#modal" data-bs-toggle="modal">See recipe</button>
+          <button class="btn btn-danger w-100">See recipe</button>
         </div>
       </div>
     `
@@ -74,9 +85,10 @@ function fillResults (meals) {
     const cardButton = container.querySelector('.btn')
     cardButton.onclick = () => {
       selectMeal(id)
+      modal.show()
     }
 
-    resultContainer.appendChild(container)
+    mealsContainer.appendChild(container)
   })
 }
 
@@ -129,7 +141,7 @@ function fillModal (meal) {
     if(meal[`strIngredient${i}`]) {
       const ingredient = meal[`strIngredient${i}`]
       const ammount = meal[`strMeasure${i}`]
-      
+
       const groupItem = document.createElement('li')
       groupItem.classList.add('list-group-item', 'd-flex', 'justify-content-between')
 
@@ -139,11 +151,90 @@ function fillModal (meal) {
       `
 
       ingredientsContainer.appendChild(groupItem)
-
     } else {
       break
     }
   }
 
-/*   modal.show() */
+  // Footer buttons
+  const modalFooter = document.querySelector('.modal-footer')
+  modalFooter.innerHTML = ''
+
+  const favoriteBtn = document.createElement('button')
+  favoriteBtn.classList.add('btn', 'btn-danger', 'col')
+  favoriteBtn.textContent = toggleButtonText(id)
+
+  favoriteBtn.onclick = () => {
+    const currentText = favoriteBtn.textContent
+    if(currentText === 'Remove favorite') {
+      favoriteBtn.textContent = 'Add to favorites'
+    } else {
+      favoriteBtn.textContent = 'Remove favorite'
+    }
+    
+    handleFavorites({
+      idMeal: id,
+      strMeal: name,
+      strMealThumb: image
+    })
+  }
+
+  const closeModalBtn = document.createElement('button')
+  closeModalBtn.classList.add('btn', 'btn-secondary', 'col')
+  closeModalBtn.textContent = 'Close'
+  closeModalBtn.onclick = () => modal.hide()
+
+  modalFooter.appendChild(favoriteBtn)
+  modalFooter.appendChild(closeModalBtn)
+}
+
+function handleFavorites (recipe) {
+
+  const favorites = JSON.parse(localStorage.getItem('favorites')) ?? []
+  
+  if(isElementOnStorage('favorites', recipe.idMeal)) {
+    const newFavorites = favorites.filter(item => item.idMeal !== recipe.idMeal)
+    localStorage.setItem('favorites', JSON.stringify(newFavorites))
+    showToast(`Removed ${recipe.strMeal} from favorites`)
+    return
+  }
+
+  localStorage.setItem('favorites', JSON.stringify([...favorites, recipe]))
+  showToast(`Added ${recipe.strMeal} to favorites`)
+}
+
+function isElementOnStorage (storageName, id) {
+  const fromStorage = JSON.parse(localStorage.getItem(storageName))
+  if(!fromStorage) return false
+
+  return fromStorage.find(item => item.idMeal === id)
+}
+
+function toggleButtonText (id) {
+  if(isElementOnStorage('favorites', id)) {
+    return 'Remove favorite'
+  } else {
+    return 'Add to favorites'
+  }
+}
+
+function showToast (message) {
+  const toastDiv = document.getElementById('toast')
+  const toastBody = document.querySelector('.toast-body')
+  const toast = new bootstrap.Toast(toastDiv)
+
+  toastBody.textContent = message
+  toast.show()
+}
+
+function getFavorites () {
+  const favorites = JSON.parse(localStorage.getItem('favorites')) ?? []
+  if (favorites.length) {
+    fillResults(favorites, resultContainer)
+  } else {
+    const noFavorites = document.createElement('p')
+    noFavorites.classList.add('fs-4', 'text-center', 'fw-bold', 'mt-5')
+    noFavorites.textContent = 'No favorites yet'
+    favoritesContainer.appendChild(noFavorites)
+  }
 }
