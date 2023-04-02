@@ -6,9 +6,10 @@ export async function fetchImages (query, page = 1) {
   const orderParam = `&order=popular`
   const perPageParam = '&per_page=20'
   const pageParam = `&page=${page}`
+  const lang = '&lang="es"'
 
   try {
-    const res = await fetch(BASE_URL + `key=${KEY}` + queryParam + orderParam + perPageParam + pageParam)
+    const res = await fetch(BASE_URL + `key=${KEY}` + queryParam + orderParam + perPageParam + pageParam + lang)
     const json = await res.json()
     return json
   } catch (error) {
