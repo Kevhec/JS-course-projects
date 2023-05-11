@@ -1,0 +1,11 @@
+h3.text-center Lo que vivieron nuestros clientes
+  .row.testimoniales
+    each testimonial in testimonials
+      .col-md-6.col-lg-4.mb-4
+        .card
+          .card-body
+            blockquote.blockquote
+              p.mb-0
+                | #{testimonial.message}
+            footer.blockquote-footer
+              | #{testimonial.name}

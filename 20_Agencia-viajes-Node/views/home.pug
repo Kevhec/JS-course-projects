@@ -1,0 +1,30 @@
+extends ./layout/index
+
+block slider
+  .slider
+    h2 Río de Janeiro
+    em aventura
+
+block content
+  main.container.mt-5
+    h2.text-center.mb-5 Sobre nosotros
+    .row.mb-5
+      .col-md-6
+        p Ad velit esse laborum eiusmod laboris consectetur quis ullamco consectetur. Quis adipisicing sint irure aute est veniam Lorem incididunt do. Id nostrud officia id nulla. Labore pariatur nostrud ipsum sint.
+        p Et aute elit irure fugiat commodo reprehenderit consequat laborum voluptate sunt consequat irure. Sunt in occaecat pariatur non mollit aute. Aliquip consequat mollit officia in.
+      .col-md-6
+        img.img-fluid(src="/images/inicio_nosotros.jpg", alt="Imagen nosotros")
+  section.container.mt-5
+    include ./layout/trips_content
+  section.descuento
+    .container
+      .row
+        .col-md-6
+          .contenido
+            h3 5% de descuento
+            p.titulo Viaje a Canadá
+            p.fecha 11 de Julio de 2023 - 19 de Julio de 2023
+            p.precio $2500 USD
+  section.container
+    h2.mt-5.text-center Testimoniales
+    include ./layout/testimonials_content

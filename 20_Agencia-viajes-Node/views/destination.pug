@@ -1,0 +1,22 @@
+extends ./layout/index
+
+block content
+  main.container.mt-5
+    .row
+      .col-md-5
+        img.img-fluid(src=`/images/destinos_${destination.imagen}_ln.jpg`, alt=`Imagen de ${destination.titulo}`)
+      .col-md-7
+        h2 #{page}
+        p.d-flex.align-items-center.mb-2
+          img.mr-2(src="/images/icono_calendario.svg", width=20)
+          | #{destination.fecha_ida} - #{destination.fecha_vuelta}
+        p.d-flex.align-items-center.mb-2
+          img.mr-2(src="/images/icono_moneda.svg", width=20)
+          | $#{destination.precio} dólares
+        p.d-flex.align-items-center
+          img.mr-2(src="/images/icono_user.svg", width=20)
+          span.font-weight-bold #{destination.disponibles}&nbsp;
+          | Disponibles
+        p
+          | #{destination.descripcion}
+

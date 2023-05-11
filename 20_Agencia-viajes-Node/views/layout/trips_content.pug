@@ -1,0 +1,18 @@
+.row.proximos-viajes
+  each trip in trips
+    .col-md-6.col-lg-4.mb-4
+      .card
+        figure
+          img.card-img-top(src=`/images/destinos_${trip.imagen}.jpg`, alt=`Imagen de ${trip.titulo}`)
+        .card-body
+          h2 #{trip.titulo}
+          p.d-flex.align-items-center.mb-2
+            img.mr-2(src="/images/icono_calendario.svg", width=20)
+            | #{trip.fecha_ida} - #{trip.fecha_vuelta}
+          p.d-flex.align-items-center
+            img.mr-2(src="/images/icono_user.svg", width=20)
+            span.font-weight-bold #{trip.disponibles}&nbsp;
+            | Disponibles
+          p
+            | #{trip.descripcion.substr(0, 100) + '...'}
+          a.btn.btn-success.btn-block(href=`trips/${trip.slug}`) Más información 

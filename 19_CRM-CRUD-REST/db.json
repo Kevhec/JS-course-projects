@@ -1,0 +1,18 @@
+{
+  "clientes": [
+    {
+      "nombre": "Kevin Alejandro",
+      "email": "kevin@correo.com",
+      "telefono": "3103797664",
+      "empresa": "Cientígrados",
+      "id": 1
+    },
+    {
+      "nombre": "Nayelis",
+      "email": "Nayelis@correo.com",
+      "telefono": "231321",
+      "empresa": "La Nayelis corporación",
+      "id": 2
+    }
+  ]
+}
