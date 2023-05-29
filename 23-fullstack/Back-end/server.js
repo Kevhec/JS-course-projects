@@ -32,7 +32,7 @@ app.use(cors(corsOptions))
 app.use('/api/veterinarian', veterinarianRoutes)
 app.use('/api/pacient', pacientRoutes)
 
-const port = process.env.SERVER_PORT || 4000
+const port = process.env.PORT || 4000
 
 // Initialize server on defined port
 app.listen(port, () => {
