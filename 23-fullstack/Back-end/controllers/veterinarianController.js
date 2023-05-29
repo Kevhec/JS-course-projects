@@ -94,7 +94,7 @@ const authenticate = async (req, res) => {
 
     // Respond with user JWT
     const user = {
-      id: userToAuthenticate._id,
+      _id: userToAuthenticate._id,
       name: userToAuthenticate.name,
       email: userToAuthenticate.email,
       tel: userToAuthenticate.tel,
@@ -181,6 +181,7 @@ const newPassword = async (req, res) => {
 // Update profile data
 const updateProfile = async (req, res) => {
   try {
+    console.log(req.params)
     const veterinarian = await Veterinarian.findById(req.params.id)
     if (!veterinarian) {
       const veterinarianNotFoundError = new Error('There was an error looking for this veterinarian, check if it exists on database or contact tech support')

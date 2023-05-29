@@ -51,6 +51,7 @@ export default function EditProfile (): JSX.Element {
         setMessage('Please modify your info before submitting')
         return
       }
+      console.log(auth)
 
       const updatedProfile = ({ ...auth, ...formData })
       const { message, hasErrorRes } = await updateProfile(updatedProfile)
