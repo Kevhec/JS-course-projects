@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto'
 import Veterinarian from '../models/Veterinarian.js'
 import generateJWT from '../utils/generateJWT.js'
-import signUpEmail from '../utils/signupEmail.js'
+import signUpEmail from '../utils/signUpEmail.js'
 import forgotPasswordEmail from '../utils/forgotPasswordEmail.js'
 
 const signUp = async (req, res) => {
