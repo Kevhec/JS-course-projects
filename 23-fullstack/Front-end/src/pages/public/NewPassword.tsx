@@ -88,15 +88,17 @@ export default function NewPassword (): JSX.Element {
       </h1>
       <div className='mt-12 md:mt-5 shadow-lg px-5 py-10 rounded-xl bg-white'>
         <FormProvider {...methods}>
-          {loading
-            ? <Loader />
-            : (
-              <>
-                <Alert isError={hasError}>
-                  {message}
-                </Alert>
-              </>
-              )}
+          {
+            loading
+              ? <Loader />
+              : (
+                <>
+                  <Alert isError={hasError}>
+                    {message}
+                  </Alert>
+                </>
+                )
+            }
           <form
             onSubmit={evt => evt.preventDefault()}
             noValidate

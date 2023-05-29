@@ -31,7 +31,7 @@ interface PacientsPayload {
     symptoms: string
   }
   [PacientsActionKind.REMOVE]: {
-    _id: string
+    id: string | undefined
   }
   [PacientsActionKind.EDIT]: {
     id: string
@@ -65,7 +65,7 @@ function pacientsReducer (pacients: PacientType[], action: PacientActions): Paci
         symptoms: action.payload.symptoms
       }]
     case PacientsActionKind.REMOVE:
-      return pacients.filter((pacient) => pacient.id !== action.payload._id)
+      return pacients.filter((pacient) => pacient.id !== action.payload.id)
     case PacientsActionKind.EDIT:
       return pacients.map((pacient) =>
         pacient.id === action.payload.id ? { ...pacient, ...action.payload } : pacient

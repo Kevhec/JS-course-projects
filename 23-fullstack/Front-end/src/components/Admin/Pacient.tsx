@@ -38,13 +38,35 @@ export default function Pacient ({
     setEditMode(true)
   }
 
-  const { editPacient } = usePacients()
+  const { editPacient, deletePacient } = usePacients()
 
   const onSubmit = methods.handleSubmit(formData => {
-    console.log(formData)
     void editPacient({ ...formData, id })
     setEditMode(false)
   })
+
+  const handleSecondaryButton = async (): Promise<void> => {
+    switch (true) {
+      case editMode:
+        if (confirm('Are you sure? changes won\'t be saved')) {
+          setEditMode(false)
+        }
+        break
+      default:
+        try {
+          if (confirm('Are you sure you want to delete this pacient? This action can\'t be reversed.')) {
+            const { data, status } = await deletePacient(id)
+            if (status === 200) {
+              console.log(data)
+            } else {
+              console.log(data)
+            }
+          }
+        } catch (error: any) {
+          console.error(error)
+        }
+    }
+  }
 
   const copyText = (): void => {
     if (editMode) return
@@ -65,6 +87,7 @@ export default function Pacient ({
             typeOfValidation={petNameValidation}
             id={id}
             editMode={editMode}
+            setValue={methods.setValue}
           />
           <PacientInfo
             index='Owner'
@@ -72,6 +95,7 @@ export default function Pacient ({
             typeOfValidation={petOwnerNameValidation}
             id={id}
             editMode={editMode}
+            setValue={methods.setValue}
           />
           <PacientInfo
             index='Contact Email'
@@ -83,6 +107,7 @@ export default function Pacient ({
             typeOfValidation={petOwnerEmailValidation}
             id={id}
             editMode={editMode}
+            setValue={methods.setValue}
           />
           <PacientInfo
             index='Discharge Date'
@@ -92,6 +117,7 @@ export default function Pacient ({
             typeOfValidation={petOwnerEmailValidation}
             id={id}
             editMode={editMode}
+            setValue={methods.setValue}
           />
           <PacientInfo
             index='Symptoms'
@@ -99,6 +125,7 @@ export default function Pacient ({
             typeOfValidation={textAreaValidation}
             id={id}
             editMode={editMode}
+            setValue={methods.setValue}
           />
 
           <div className='my-5 grid grid-cols-2 gap-2'>
@@ -110,11 +137,7 @@ export default function Pacient ({
             />
             <Button
               value={editMode ? 'Cancel' : 'Remove'}
-              onClick={() => {
-                if (confirm('Are you sure? changes won\'t be saved')) {
-                  setEditMode(false)
-                }
-              }}
+              onClick={handleSecondaryButton}
               className='px-0 pt-2 pb-2 mt-0 bg-red-500 hover:bg-red-700 active:bg-red-800'
               dataset={{ 'data-id': id }}
             />

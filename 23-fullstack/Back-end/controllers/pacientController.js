@@ -47,12 +47,11 @@ const getSpecificPacient = async (req, res) => {
 }
 
 const updatePacient = async (req, res) => {
-  console.log(req.params)
   try {
     const pacient = await Pacient.findById(req.params.id)
 
     if (!pacient) {
-      const pacientNotFoundError = new Error('Pacient not found, please try again or contact tech department')
+      const pacientNotFoundError = new Error('Pacient not found, please try again or contact tech support')
       return res.status(404).json({ message: pacientNotFoundError.message })
     }
 

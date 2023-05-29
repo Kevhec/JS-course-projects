@@ -25,7 +25,7 @@ export default function Label ({ id, label, disabled, inputError, small, name }:
   )
 
   return (
-    <div className='flex justify-between'>
+    <div className='flex justify-between gap-5'>
       <label
         htmlFor={id}
         className={labelClasses}

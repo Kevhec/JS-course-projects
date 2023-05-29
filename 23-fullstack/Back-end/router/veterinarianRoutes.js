@@ -6,7 +6,9 @@ import {
   authenticate,
   forgottenPassword,
   checkPasswordToken,
-  newPassword
+  newPassword,
+  updateProfile,
+  updatePassword
 } from '../controllers/veterinarianController.js'
 import checkAuth from '../middleware/authMiddleware.js'
 
@@ -29,5 +31,7 @@ router.route('/forgotten-password/:token')
 
 // PRIVATE AREA - Custom middleware, first executes checkAuth then profile
 router.get('/profile', checkAuth, profile)
+router.patch('/profile/:id', checkAuth, updateProfile)
+router.patch('/changepassword/', checkAuth, updatePassword)
 
 export default router

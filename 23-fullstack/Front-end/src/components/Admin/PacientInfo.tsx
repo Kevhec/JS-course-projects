@@ -1,4 +1,4 @@
-import { Control, Controller, useFormContext } from 'react-hook-form'
+import { Control, Controller, UseFormSetValue, useFormContext } from 'react-hook-form'
 import { DatePicker } from 'antd'
 import { IconContext } from 'react-icons'
 import { BsInfoCircle } from 'react-icons/bs'
@@ -8,11 +8,12 @@ import Input from '../Input'
 import dayjs from 'dayjs'
 
 import { Validations } from '../../utils/inputValidations'
-import { PacientType } from '../../context/PacientsProvider'
+import { PacientType, dynamicType } from '../../context/PacientsProvider'
 import isFormInvalid from '../../utils/isFormValid'
 import findInputErrors from '../../utils/findInputError'
 
 import InputError from '../InputError'
+import { useEffect } from 'react'
 
 interface Props {
   index: string
@@ -26,6 +27,7 @@ interface Props {
   valueClasses?: string[]
   onClick?: () => void
   control?: Control<PacientType, any>
+  setValue: UseFormSetValue<PacientType>
 }
 
 export default function PacientInfo ({
@@ -39,7 +41,8 @@ export default function PacientInfo ({
   typeOfInput,
   control,
   editMode,
-  id
+  id,
+  setValue
 }: Props): JSX.Element {
   const {
     formState: { errors }
@@ -53,6 +56,14 @@ export default function PacientInfo ({
         : `${typeOfValidation.name}-${id !== undefined ? id : ''}`
   })
   const isInvalid = isFormInvalid(inputError)
+
+  const inputName: dynamicType = `${typeOfInput === 'date' ? 'dischargeDate' : typeOfValidation.name}-${id !== undefined ? id : ''}`
+
+  useEffect(() => {
+    if (editMode) {
+      setValue(inputName, value)
+    }
+  }, [editMode])
 
   const containerClasses = cn(
     'mb-5 md:mb-4 last:mb-0 flex flex-col md:gap-2 md:grid md:grid-cols-2 md:place-items-start overflow-hidden'
@@ -110,8 +121,8 @@ export default function PacientInfo ({
         content = (
           <Input
             {...typeOfValidation}
-            name={`${typeOfValidation.name}-${id !== undefined ? id : ''}`}
-            id={`${typeOfValidation.name}-${id !== undefined ? id : ''}`}
+            name={inputName}
+            id={inputName}
             hasLabel={false}
             className={`mt-3 py-2 md:mt-0 ${isInvalid ? 'mb-2' : ''}`}
             containerClasses='mb-0 md:w-full'

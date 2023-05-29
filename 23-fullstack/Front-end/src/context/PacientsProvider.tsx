@@ -17,10 +17,10 @@ export interface PacientType {
   petOwnerEmail: string
   dischargeDate: number
   symptoms: string
-  dynamicDischargeDate?: any
+  dynamicType?: any
 }
 
-export type dynamicDischargeDate = keyof PacientType | `dischargeDate${string}`
+export type dynamicType = keyof PacientType | any
 
 export const initialState: PacientType[] = []
 
@@ -29,6 +29,7 @@ export interface PacientsContextType {
   dispatch: React.Dispatch<PacientActions>
   newPacient: (pacient: PacientType) => Promise<void>
   editPacient: (pacient: PacientType) => Promise<void>
+  deletePacient: (id: string | undefined) => Promise<any>
   toggleEditModeState: (pacient: PacientType) => void
   editModeState: EditModeState | null
   loading: boolean
@@ -118,6 +119,32 @@ function PacientsProvider ({ children }: Props): JSX.Element {
     }
   }
 
+  const deletePacient = async (id: string | undefined): Promise<any> => {
+    try {
+      const token = localStorage.getItem('vcpa_token')
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token !== null ? token : ''}`
+        }
+      }
+      const { data, status } = await axiosClient.delete(
+        `/pacient/${id !== undefined ? id : ''}`, config
+      )
+      if (status === 200) {
+        dispatch({
+          type: PacientsActionKind.REMOVE,
+          payload: {
+            id
+          }
+        })
+      }
+      return { data, status }
+    } catch (error: any) {
+      return error.response
+    }
+  }
+
   useEffect(() => {
     pacientsReducerInit()
       .then((data) => {
@@ -137,6 +164,7 @@ function PacientsProvider ({ children }: Props): JSX.Element {
         dispatch,
         newPacient,
         editPacient,
+        deletePacient,
         toggleEditModeState,
         editModeState,
         loading

@@ -178,6 +178,66 @@ const newPassword = async (req, res) => {
   }
 }
 
+// Update profile data
+const updateProfile = async (req, res) => {
+  try {
+    const veterinarian = await Veterinarian.findById(req.params.id)
+    if (!veterinarian) {
+      const veterinarianNotFoundError = new Error('There was an error looking for this veterinarian, check if it exists on database or contact tech support')
+      return res.status(404).json({ message: veterinarianNotFoundError })
+    }
+
+    const { email } = req.body
+    if (veterinarian.email !== email) {
+      const doesEmailExists = await Veterinarian.findOne({ email })
+      if (doesEmailExists) {
+        const emailAlreadyRegisteredError = new Error('This email is already used by another user')
+        return res.status(403).json({ message: emailAlreadyRegisteredError.message })
+      }
+    }
+
+    // Update Pacient
+    const updatedFields = req.body
+    Object.keys(updatedFields).forEach(key => {
+      if (!updatedFields[key]) return
+      veterinarian[key] = updatedFields[key]
+    })
+
+    const updatedVeterinarian = await veterinarian.save()
+    res.status(200).json({ updatedVeterinarian, message: 'Profile updated succesfully' })
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+const updatePassword = async (req, res) => {
+  try {
+    // Read data
+    const { _id } = req.veterinarian
+    const { currentPassword, password } = req.body
+    console.log(currentPassword)
+
+    // Check if user exists
+    const user = await Veterinarian.findById(_id)
+    if (!user) {
+      const userNotFoundError = new Error('User couldn\'t be found, please try again or contact tech support')
+      return res.status(404).json({ message: userNotFoundError.message })
+    }
+    // Validate current password
+    const isPasswordCorrect = await user.checkPassword(currentPassword.trim())
+    if (!isPasswordCorrect) {
+      const incorrectPasswordError = new Error('Incorrect password, please check provided info')
+      return res.status(403).json({ message: incorrectPasswordError.message })
+    }
+    // Update password
+    user.password = password
+    user.save()
+    res.json({ message: 'Password changed successfully!' })
+  } catch (error) {
+    console.error(`[server]: Error getting user from DB. Error Data: ${error.message}`)
+  }
+}
+
 export {
   signUp,
   profile,
@@ -185,5 +245,7 @@ export {
   authenticate,
   forgottenPassword,
   checkPasswordToken,
-  newPassword
+  newPassword,
+  updateProfile,
+  updatePassword
 }

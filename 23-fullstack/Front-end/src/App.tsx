@@ -13,8 +13,13 @@ import VerifyAccount from './pages/public/VerifyAccount'
 import ForgotPassword from './pages/public/ForgotPassword'
 import NewPassword from './pages/public/NewPassword'
 import Pacients from './pages/admin/Pacients'
+import EditProfile from './pages/admin/EditProfile'
+import ChangePassword from './pages/admin/ChangePassword'
 
-// TODOS: Passwords requirements on label, countdown for redirect
+// TODOS:
+//  - Passwords requirements on label
+//  - Countdown for redirect
+//  - Messages for adding, editing and deleting pacients
 
 function App (): JSX.Element {
   const methods = useForm()
@@ -34,6 +39,8 @@ function App (): JSX.Element {
               </Route>
               <Route path='/admin' element={<AdminLayout />}>
                 <Route index element={<Pacients />} />
+                <Route path='profile' element={<EditProfile />} />
+                <Route path='changepassword' element={<ChangePassword />} />
               </Route>
             </Routes>
           </BrowserRouter>

@@ -1,5 +1,6 @@
 import { createContext, useEffect, useState } from 'react'
 import authUser from '../utils/authUser'
+import axiosClient from '../config/axios'
 
 interface Props {
   children: React.ReactNode
@@ -17,7 +18,9 @@ export interface AuthContextType {
   auth: AuthState
   setAuth: React.Dispatch<React.SetStateAction<AuthState>>
   loading: boolean
+  updateProfile: (updatedProfile: AuthState) => Promise<any>
   logOut: () => void
+  changePassword: (newPasswordData: any) => Promise<any>
 }
 
 const AuthContext = createContext<AuthContextType | null>(null)
@@ -52,13 +55,48 @@ function AuthProvider ({ children }: Props): JSX.Element {
     void auth()
   }, [])
 
+  const updateProfile = async (updatedProfile: AuthState): Promise<any> => {
+    try {
+      const token = localStorage.getItem('vcpa_token')
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token !== null ? token : ''}`
+        }
+      }
+      const url = `/veterinarian/profile/${updatedProfile._id !== null ? updatedProfile._id : ''}`
+      const { data } = await axiosClient.patch(url, updatedProfile, config)
+      setAuth(data.updatedVeterinarian)
+      return { message: data.message, hasErrorRes: false }
+    } catch (error: any) {
+      return { message: error.response.data.message, hasErrorRes: true }
+    }
+  }
+
   const logOut = (): void => {
     localStorage.removeItem('vcpa_token')
     setAuth(initialAuthState)
   }
 
+  const changePassword = async (newPasswordData: any): Promise<any> => {
+    try {
+      const token = localStorage.getItem('vcpa_token')
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token !== null ? token : ''}`
+        }
+      }
+      const url = '/veterinarian/changepassword/'
+      const { data } = await axiosClient.patch(url, newPasswordData, config)
+      return { message: data.message, hasErrorRes: false }
+    } catch (error: any) {
+      return { message: error.response.data.message, hasErrorRes: true }
+    }
+  }
+
   return (
-    <AuthContext.Provider value={{ auth, setAuth, loading, logOut }}>
+    <AuthContext.Provider value={{ auth, setAuth, loading, updateProfile, logOut, changePassword }}>
       {children}
     </AuthContext.Provider>
   )

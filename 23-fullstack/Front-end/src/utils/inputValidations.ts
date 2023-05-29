@@ -17,6 +17,10 @@ export interface Validations extends InputProps {
       value: number
       message: string
     }
+    pattern?: {
+      value: RegExp
+      message: string
+    }
     validate?: (arg1: string, arg2: number) => void
   }
 }
@@ -26,6 +30,8 @@ function formValidations (passwordValue?: string | null): {
   passwordValidation: Validations
   repeatPasswordValidation: Validations
   emailValidation: Validations
+  websiteValidation: Validations
+  telValidation: Validations
   petNameValidation: Validations
   petOwnerNameValidation: Validations
   petOwnerEmailValidation: Validations
@@ -64,7 +70,7 @@ function formValidations (passwordValue?: string | null): {
       },
       minLength: {
         value: 6,
-        message: 'min 6 characters'
+        message: 'Min 6 characters'
       }
     }
   }
@@ -103,9 +109,33 @@ function formValidations (passwordValue?: string | null): {
       },
       pattern: {
         value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-        message: 'invalid email address'
+        message: 'Invalid email address'
       }
     }
+  }
+
+  const websiteValidation = {
+    label: 'Website',
+    name: 'website',
+    type: 'text',
+    id: 'userWebsite',
+    placeholder: 'http://mysite.com/, mywebsite.es,...',
+    autoComplete: 'on',
+    validation: {
+      pattern: {
+        value: /^((https?|ftp|smtp):\/\/)?(www.)?[a-z0-9]+\.[a-z]+(\/[a-zA-Z0-9#]+\/?)*$/i,
+        message: 'Invalid website address'
+      }
+    }
+  }
+
+  const telValidation = {
+    label: 'Tel',
+    name: 'tel',
+    type: 'tel',
+    id: 'userTel',
+    placeholder: '+00 123 465 7890',
+    autoComplete: 'tel'
   }
 
   const petOwnerEmailValidation = {
@@ -167,6 +197,8 @@ function formValidations (passwordValue?: string | null): {
     passwordValidation,
     repeatPasswordValidation,
     emailValidation,
+    websiteValidation,
+    telValidation,
     petNameValidation,
     petOwnerNameValidation,
     petDischargeDateValidation,

@@ -20,7 +20,7 @@ export default function AdminHeader (): JSX.Element {
             Pacients
           </Link>
           <Link
-            to='/profile'
+            to='/admin/profile'
             className='text-white text-sm uppercase font-semibold leading-none hover:text-indigo-100'
           >
             Profile
