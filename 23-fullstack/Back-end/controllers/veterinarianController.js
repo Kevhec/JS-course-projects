@@ -215,7 +215,6 @@ const updatePassword = async (req, res) => {
     // Read data
     const { _id } = req.veterinarian
     const { currentPassword, password } = req.body
-    console.log(currentPassword)
 
     // Check if user exists
     const user = await Veterinarian.findById(_id)
