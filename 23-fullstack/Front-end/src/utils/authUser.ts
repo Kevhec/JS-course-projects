@@ -8,7 +8,7 @@ export default async function authUser (token: string): Promise<AuthState> {
       Authorization: `Bearer ${token}`
     }
   }
-
+/* yes */
   try {
     const { data } = await axiosClient('/veterinarian/profile', config)
     return data
